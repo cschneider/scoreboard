@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -15,12 +14,12 @@ import scoreboard.api.Command;
 public class InputAdapterTest {
 
 	@Test
-	public void controlViaStdIn() throws UnsupportedEncodingException, InterruptedException {
+	public void controlViaStdIn() throws Exception {
 		Scoreboard scoreBoard = mock(Scoreboard.class);
 		InOrder inOrder = inOrder(scoreBoard);
 		Reader reader = new StringReader("qawsrct");
 		InputAdapter input = new InputAdapter(reader, scoreBoard);
-		input.run();
+		input.runAllCommands();
 		inOrder.verify(scoreBoard).execute(Command.IncreaseA);
 		inOrder.verify(scoreBoard).execute(Command.DecreaseA);
 		inOrder.verify(scoreBoard).execute(Command.IncreaseB);

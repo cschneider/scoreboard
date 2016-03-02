@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.UncheckedIOException;
 
 import scoreboard.api.ScoreListener;
 
@@ -19,14 +20,12 @@ public class ScoreWriter implements ScoreListener {
 
 	@Override
 	public void onScoreChanged(int scoreA, int scoreB) {
-		try {
-			PrintStream out = new PrintStream(new FileOutputStream(scorefile));
+		try (PrintStream out = new PrintStream(new FileOutputStream(scorefile))) {
 			out.println(String.format("%d,%d", scoreA, scoreB));
-			out.close();
+			this.chainedListener.onScoreChanged(scoreA, scoreB);
 		} catch (FileNotFoundException e) {
-			
+			throw new UncheckedIOException("Failed to write " + scorefile, e);
 		}
-		this.chainedListener.onScoreChanged(scoreA, scoreB);
 	}
 
 }

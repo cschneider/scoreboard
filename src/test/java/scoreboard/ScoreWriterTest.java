@@ -5,7 +5,9 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -39,5 +41,13 @@ public class ScoreWriterTest {
 		List<String> content = Files.readAllLines(scorefile.toPath());
 		assertEquals(1, content.size());
 		assertEquals(expectedContent, content.get(0));
+	}
+
+	@Test(expected = UncheckedIOException.class)
+	public void errorDuringFileAccess() throws Exception {
+		File scoreFile = tmp.newFolder();
+		ScoreListener scoreListener = mock(ScoreListener.class);
+		ScoreListener scoreWriter = new ScoreWriter(scoreFile, scoreListener);
+		scoreWriter.onScoreChanged(0, 0);
 	}
 }

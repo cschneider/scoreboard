@@ -7,7 +7,7 @@ import java.util.HashMap;
 import scoreboard.api.Command;
 import scoreboard.api.CommandExecutor;
 
-public class InputAdapter implements Runnable {
+public class InputAdapter {
 	boolean running;
 	private Reader reader;
 	private HashMap<Character, Command> charToCommand;
@@ -26,19 +26,15 @@ public class InputAdapter implements Runnable {
 		this.charToCommand.put('c', Command.Reset);
 	}
 
-	@Override
-	public void run() {
+	public void runAllCommands() throws IOException {
 		while (running) {
-			try {
-				char c = (char)reader.read();
-				if (c == 't') {
-					this.running = false;
-				}
-				Command command = this.charToCommand.get(c);				
-				if (command != null) {
-					executor.execute(command);
-				}
-			} catch (IOException e) {
+			char c = (char)reader.read();
+			if (c == 't') {
+				this.running = false;
+			}
+			Command command = this.charToCommand.get(c);
+			if (command != null) {
+				executor.execute(command);
 			}
 		}
 	}

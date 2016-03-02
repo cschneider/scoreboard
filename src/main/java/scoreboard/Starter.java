@@ -26,7 +26,7 @@ public class Starter {
 		historyFile.createNewFile();
 		history.replay(historyFile);
 		InputAdapter input = new InputAdapter(reader, history);
-		input.run();
+		input.runAllCommands();
 		history.write(historyFile);
 	}
 
