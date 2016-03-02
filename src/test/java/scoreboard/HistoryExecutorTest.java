@@ -6,7 +6,9 @@ import static org.mockito.Mockito.mock;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.InOrder;
 
 import scoreboard.api.Command;
@@ -14,13 +16,14 @@ import scoreboard.api.CommandExecutor;
 
 public class HistoryExecutorTest {
 
+	@Rule
+	public final TemporaryFolder tmp = new TemporaryFolder();
+
 	@Test
 	public void writeAndReadHistory() throws IOException {
-		File historyFile = new File("target/history");
-		historyFile.delete();
+		File historyFile = tmp.newFile("history");
 		writeHistory(historyFile);
 		readHistory(historyFile);
-		historyFile.delete();
 	}
 
 	private void writeHistory(File historyFile) throws IOException {
@@ -33,7 +36,7 @@ public class HistoryExecutorTest {
 		inOrder.verify(executor).execute(Command.IncreaseB);
 		history.write(historyFile);
 	}
-	
+
 	private void readHistory(File historyFile) throws IOException {
 		CommandExecutor executor = mock(CommandExecutor.class);
 		InOrder inOrder = inOrder(executor);

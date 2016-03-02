@@ -9,18 +9,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.InOrder;
 
 import scoreboard.api.ScoreListener;
 
 public class ScoreWriterTest {
 
+	@Rule
+	public final TemporaryFolder tmp = new TemporaryFolder();
+
 	@Test
 	public void writeAndForward() throws IOException {
 		ScoreListener scoreListener = mock(ScoreListener.class);
 		InOrder inOrder = inOrder(scoreListener); 
-		File scorefile = new File("target/score.csv");
+		File scorefile = tmp.newFile("score.csv");
 		ScoreListener scoreWriter = new ScoreWriter(scorefile , scoreListener);
 		scoreWriter.onScoreChanged(0, 0);
 		verifyScoreFile(scorefile, "0,0");
